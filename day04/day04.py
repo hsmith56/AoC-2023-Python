@@ -12,12 +12,29 @@ def load(example=False):
         d = [line.strip() for line in data]
     return d
 
-inpt = load()
+inpt = load(True)
 
 def part1(data, *args, **kwargs):
-    return data
+    result = 0
+    for line in data:
+        winners, _, actuals = line.partition('|')
+        winners = [int(x) for x in winners.split(": ")[1].split(" ") if x]
+        actuals = [int(x) for x in actuals.split(" ") if x]
+        n_wins = len(set(winners) & set(actuals))
+        result += round(2**(n_wins-1))
+
+    return int(result)
 
 def part2(data, *args, **kwargs):
-    return 0
+    copies = [1] * len(data)
+    for card_index, line in enumerate(data):
+        winners, _, actuals = line.partition('|')
+        winners = [int(x) for x in winners.split(": ")[1].split(" ") if x]
+        actuals = [int(x) for x in actuals.split(" ") if x]
+        n_wins = len(set(winners) & set(actuals))
+        for x in range(card_index+1, card_index+n_wins+1):
+            copies[x] += copies[card_index]
+
+    return sum(copies)
 
 print(f'Part1: {part1(inpt)}\nPart2: {part2(inpt)}')
